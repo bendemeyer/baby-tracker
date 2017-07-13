@@ -99,17 +99,23 @@ function getRows(data, templateString) {
     var rowsHTML = '';
     var template = Handlebars.compile(templateString);
     for (var i = 0; i < data.length; i++) {
+        var dateObject = buildDateFromString(data[i].date);
+        dateString = ''
+        dateString += dayMap[dateObject.getDay()] + ', ';
+        dateString += monthMap[dateObject.getMonth()] + ' ';
+        dateString += dateObject.getDate();
+        data[i].date = dateString;
         rowsHTML += template(data[i]);
     }
     return rowsHTML;
 };
 
 function getFeedingRows(feedingData) {
-    return getData(feedingData, feedingTableRow);
+    return getRows(feedingData, feedingTableRow);
 };
 
 function getDiaperRows(diaperData) {
-    return getData(diaperData, diaperTableRow);
+    return getRows(diaperData, diaperTableRow);
 };
 
 function prepareForm(jQueryForm) {
