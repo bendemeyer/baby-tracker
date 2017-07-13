@@ -44,10 +44,8 @@ function formatDateFromObject(dateObject) {
 
 function formatTimeFromObject(dateObject) {
     var minutes = dateObject.getMinutes();
-    var hour = dateObject.getHour();
-    var ampm = hour > 12 ? "PM" : "AM";
-    var hour = hour > 12 ? hour - 11 : hour;
-    return leftPad(hour, 2) + ":" + leftPad(minutes, 2) + " " + ampm;
+    var hour = dateObject.getHours();
+    return leftPad(hour, 2) + ":" + leftPad(minutes, 2);
 }
 
 function buildDateFromString(formattedDate) {
@@ -88,7 +86,7 @@ function getFeedings(fromDate, toDate) {
     });
 };
 
-function getFeedings(fromDate, toDate) {
+function getDiapers(fromDate, toDate) {
     return jQuery.ajax({
         url: '/api/diapers/' + fromDate + '/' + toDate,
         type: 'GET'
@@ -121,7 +119,7 @@ function getDiaperRows(diaperData) {
 function prepareForm(jQueryForm) {
     var thirtyMinutesAgo = new Date((new Date()).getTime() - (1000 * 60 * 30));
     jQueryForm.find('.form-date').datepicker('destroy').datepicker().datepicker('setDate', thirtyMinutesAgo);
-    jQueryForm.find('.form-time').clockpicker('remove').clockpicker({twelvehour: true, donetext: "Done", default: formatTimeFromObject(thirtyMinutesAgo)});
+    jQueryForm.find('.form-time').clockpicker('remove').clockpicker({twelvehour: true, donetext: "Done"});
     jQueryForm.find('.form-amount').val('');
     jQueryForm.find('.form-notes').val('');
 };
@@ -145,7 +143,7 @@ function prepareDates(jQueryContainer) {
         });
     };
 
-    function prepareDiaperData() {
+    function prepareDiaperData(jxhr) {
         return new Promise(function (resolve, reject) {
             jxhr.done(function (data) {
                 diaperData = data;
