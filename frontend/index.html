@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Baby Tracker</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <div id="nav">
+                <a id="feedings-link" href="#feedings" class="active" data-table-id="feeding-table" data-form-id="feeding-form">Feedings</a>
+                <a id="diapers-link" href="#diapers" data-table-id="diaper-table" data-form-id="diaper-form">Diapers</a>
+            </div>
+            <div id="dates">
+                <div class="date">
+                    <label for="from-date">From: </label>
+                    <input name="from-date" id="from-date" type="text" class="date-selector">
+                </div>
+                <div class="date">
+                    <label for="to-date">From: </label>
+                    <input name="to-date" id="to-date" type="text" class="date-selector">
+                </div>
+            </div>
+        </header>
+        <div id="main">
+            <div id="feeding-table">
+                <h2>Feedings</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Date</td>
+                            <td>Time</td>
+                            <td>Amount</td>
+                            <td>Notes</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div id="diaper-table">
+                <h2>Diapers</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Date</td>
+                            <td>Time</td>
+                            <td>Notes</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="forms">
+            <form id="feeding-form" action="#" method="POST">
+                <div class="form-row">
+                    <label for="feeding-date">Date:</label> <input type="text" name="feeding-date" id="feeding-date" class="form-date">
+                </div>
+                <div class="form-row">
+                    <label for="feeding-time">Date:</label> <input type="text" name="feeding-time" id="feeding-time" class="form-time">
+                </div>
+                <div class="form-row">
+                    <label for="feeding-amount">Date:</label> <input type="text" name="feeding-amount" id="feeding-amount" class="form-amount">
+                </div>
+                <div class="form-row">
+                    <label for="feeding-notes">Date:</label> <textarea name="feeding-notes" id="feeding-notes" class="form-notes"></textarea>
+                </div>
+                <div class="form-row">
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+            <form id="diaper-form" action="#" method="POST">
+                <div class="form-row">
+                    <label for="diaper-date">Date:</label> <input type="text" name="diaper-date" id="diaper-date" class="form-date">
+                </div>
+                <div class="form-row">
+                    <label for="diaper-time">Date:</label> <input type="text" name="diaper-time" id="diaper-time" class="form-time">
+                </div>
+                <div class="form-row">
+                    <label for="diaper-notes">Date:</label> <textarea name="diaper-notes" id="diaper-notes" class="form-notes"></textarea>
+                </div>
+                <div class="form-row">
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+        <footer>
+            <div id="show-form">
+                Add New Entry
+            </div>
+        </footer>
+    </body>
+</html>
