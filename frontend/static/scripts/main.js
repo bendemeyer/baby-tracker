@@ -42,6 +42,12 @@ function formatDateFromObject(dateObject) {
     return dateArray.join('-');
 };
 
+function formatDateStringForURL(dateString) {
+    var dateArray = dateString.split('/');
+    dateArray.unshift(dateArray.pop());
+    return dateArray.join('-');
+}
+
 function formatTimeFromObject(dateObject) {
     var minutes = dateObject.getMinutes();
     var hour = dateObject.getHours();
@@ -58,24 +64,26 @@ function buildDateFromString(formattedDate) {
 
 function postFeeding(date, time, amount, notes) {
     return jQuery.ajax({
-        url: '/api/feedings/' + date,
+        url: '/api/feedings/' + date + '/',
+        contentType: "application/json",
         type: 'POST',
-        data: {
+        data: JSON.stringify({
             time: time,
             amount: amount,
             notes: notes
-        }
+        })
     });
 };
 
 function postDiaper(date, time, notes) {
     return jQuery.ajax({
-        url: '/api/diaper/' + date,
+        url: '/api/diaper/' + date + '/',
+        contentType: "application/json",
         type: 'POST',
-        data: {
+        data: JSON.stringify({
             time: time,
             notes: notes
-        }
+        })
     });
 };
 
@@ -169,7 +177,7 @@ function prepareDates(jQueryContainer) {
 
         $('#feeding-form').submit(function (e) {
             e.preventDefault();
-            var date = $(this).find('#feeding-date').val();
+            var date = formatDateStringForURL($(this).find('#feeding-date').val());
             var time = $(this).find('#feeding-time').val();
             var amount = $(this).find('#feeding-amount').val();
             var notes = $(this).find('#feeding-notes').val();
@@ -182,7 +190,7 @@ function prepareDates(jQueryContainer) {
 
         $('#diaper-form').submit(function (e) {
             e.preventDefault();
-            var date = $(this).find('#diaper-date').val();
+            var date = formatDateStringForURL($(this).find('#diaper-date').val());
             var time = $(this).find('#diaper-time').val();
             var notes = $(this).find('#diaper-notes').val();
             prepareFeedingData(postDiaper(date, time, notes)).then(function () {
@@ -192,11 +200,11 @@ function prepareDates(jQueryContainer) {
             });
         });
         
-        prepareFeedingData(getFeedings($('#from-date').val(), $('#to-date').val())).then(function () {
+        prepareFeedingData(getFeedings(formatDateStringForURL($('#from-date').val()), formatDateStringForURL($('#to-date').val()))).then(function () {
             $('#feeding-table tbody').html(getFeedingRows(feedingData));
         });
 
-        prepareDiaperData(getDiapers($('#from-date').val(), $('#to-date').val())).then(function () {
+        prepareDiaperData(getDiapers(formatDateStringForURL($('#from-date').val()), formatDateStringForURL($('#to-date').val()))).then(function () {
             $('#diaper-table tbody').html(getDiaperRows(diaperData));
         });
 
