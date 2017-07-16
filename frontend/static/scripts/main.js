@@ -67,6 +67,7 @@ function postFeeding(date, time, amount, notes) {
         url: '/api/feedings/' + date + '/',
         contentType: "application/json",
         type: 'POST',
+        dataType: 'json',
         data: JSON.stringify({
             time: time,
             amount: amount,
@@ -77,9 +78,10 @@ function postFeeding(date, time, amount, notes) {
 
 function postDiaper(date, time, notes) {
     return jQuery.ajax({
-        url: '/api/diaper/' + date + '/',
+        url: '/api/diapers/' + date + '/',
         contentType: "application/json",
         type: 'POST',
+        dataType: 'json',
         data: JSON.stringify({
             time: time,
             notes: notes
@@ -89,15 +91,17 @@ function postDiaper(date, time, notes) {
 
 function getFeedings(fromDate, toDate) {
     return jQuery.ajax({
-        url: '/api/feedings/' + fromDate + '/' + toDate,
-        type: 'GET'
+        url: '/api/feedings/' + fromDate + '/' + toDate + '/',
+        type: 'GET',
+        dataType: 'json'
     });
 };
 
 function getDiapers(fromDate, toDate) {
     return jQuery.ajax({
-        url: '/api/diapers/' + fromDate + '/' + toDate,
-        type: 'GET'
+        url: '/api/diapers/' + fromDate + '/' + toDate + '/',
+        type: 'GET',
+        dataType: 'json'
     });
 };
 
@@ -127,7 +131,7 @@ function getDiaperRows(diaperData) {
 function prepareForm(jQueryForm) {
     var thirtyMinutesAgo = new Date((new Date()).getTime() - (1000 * 60 * 30));
     jQueryForm.find('.form-date').datepicker('destroy').datepicker().datepicker('setDate', thirtyMinutesAgo);
-    jQueryForm.find('.form-time').clockpicker('remove').clockpicker({twelvehour: true, donetext: "Done"});
+    jQueryForm.find('.form-time').clockpicker({twelvehour: true, donetext: "Done", default: thirtyMinutesAgo});
     jQueryForm.find('.form-amount').val('');
     jQueryForm.find('.form-notes').val('');
 };
@@ -143,6 +147,7 @@ function prepareDates(jQueryContainer) {
     function prepareFeedingData(jxhr) {
         return new Promise(function (resolve, reject) {
             jxhr.done(function (data) {
+                console.log(data);
                 feedingData = data;
                 resolve();
             }).fail(function () {

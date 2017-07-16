@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 import MySQLdb
 import MySQLdb.cursors
 import json
@@ -34,7 +34,7 @@ def feedings(from_date, to_date=None):
         for k, v in row.items():
             row[k] = str(v)
     dbconn.close()
-    return json.dumps(rows)
+    return Response(json.dumps(rows), mimetype='application/json')
 
 
 @app.route("/api/diapers/<from_date>/", methods=["GET", "POST"])
@@ -58,9 +58,12 @@ def diapers(from_date, to_date=None):
         'from_date': from_date,
         'to_date': to_date
     })
-    rows = cursor.fetchall()
+    rows = list(cursor.fetchall())
+    for row in rows[:]:
+        for k, v in row.items():
+            row[k] = str(v)
     dbconn.close()
-    return json.dumps(rows)
+    return Response(json.dumps(rows), mimetype='application/json')
 
 
 def getDBConnection():
