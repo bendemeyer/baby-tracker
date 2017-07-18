@@ -4,8 +4,8 @@ var feedingTemplate = {
 };
 
 var diaperTemplate = {
-    'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Notes</th></thead><tbody>{{{rows}}}</tbody></table></div>',
-    'rows': '<tr><td>{{time}}</td><td>{{notes}}</td></tr>'
+    'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Poop?</th><th>Notes</th></thead><tbody>{{{rows}}}</tbody></table></div>',
+    'rows': '<tr><td>{{time}}</td><td>{{poop}}</td><td>{{notes}}</td></tr>'
 };
 
 var dayMap = [
@@ -55,6 +55,19 @@ function formatDateStringForURL(dateString) {
     return dateArray.join('-');
 }
 
+function formatTimeStringForPost(timeString) {
+    var timeSplit = timeString.split(' ');
+    var timeArray = timeSplit[0].split(':');
+    if (timeSplit[1] == 'PM' && timeArray[0] != 12) {
+        timeArray[0] = parseInt(timeArray[0]) + 12;
+    }
+    else if (timeSplit[1] == 'AM' && timeArray[0] == 12) {
+        timeArray[0] = 0;
+    }
+    timeArray.push('00');
+    return timeArray.join(':');
+}
+
 function formatTimeFromObject(dateObject) {
     var minutes = dateObject.getMinutes();
     var hour = dateObject.getHours();
@@ -83,7 +96,7 @@ function postFeeding(date, time, amount, notes) {
     });
 };
 
-function postDiaper(date, time, notes) {
+function postDiaper(date, time, poop, notes) {
     return jQuery.ajax({
         url: '/api/diapers/' + date + '/',
         contentType: "application/json",
@@ -91,6 +104,7 @@ function postDiaper(date, time, notes) {
         dataType: 'json',
         data: JSON.stringify({
             time: time,
+            poop: poop,
             notes: notes
         })
     });
@@ -153,19 +167,32 @@ function getFeedingTables(feedingData) {
 };
 
 function getDiaperTables(diaperData) {
+    for (key in diaperData) {
+        for (var i = 0; i < diaperData[key].length; i++) {
+            if (diaperData[key][i]['poop']) {
+                diaperData[key][i]['poop'] = 'Yes';
+            }
+            else {
+                diaperData[key][i]['poop'] = 'No';
+            }
+        }
+    }
     return getTables(diaperData, diaperTemplate);
 };
 
 function prepareForm(jQueryForm) {
     var thirtyMinutesAgo = new Date((new Date()).getTime() - (1000 * 60 * 30));
     jQueryForm.find('.form-date').datepicker('destroy').datepicker().datepicker('setDate', thirtyMinutesAgo);
-    jQueryForm.find('.form-time').clockpicker({twelvehour: true, donetext: "Done", default: thirtyMinutesAgo});
+    jQueryForm.find('.form-time').clockpicker({twelvehour: true, donetext: "Done", default: 'now', fromnow: -(1000 * 60 * 30)});
     jQueryForm.find('.form-amount').val('');
     jQueryForm.find('.form-notes').val('');
 };
 
 function prepareDates(jQueryContainer) {
-    jQueryContainer.find(".date-selector").datepicker('destroy').datepicker().datepicker('setDate', new Date());
+    var today = new Date();
+    var yesterday = new Date().setDate(today.getDate() - 1);
+    jQueryContainer.find("#from-date").datepicker('destroy').datepicker().datepicker('setDate', new Date(yesterday));
+    jQueryContainer.find("#to-date").datepicker('destroy').datepicker().datepicker('setDate', today);
 }
 
 (function ($) {
@@ -175,7 +202,6 @@ function prepareDates(jQueryContainer) {
     function prepareFeedingData(jxhr) {
         return new Promise(function (resolve, reject) {
             jxhr.done(function (data) {
-                console.log(data);
                 feedingData = data;
                 resolve();
             }).fail(function () {
@@ -225,11 +251,16 @@ function prepareDates(jQueryContainer) {
         $('#feeding-form').submit(function (e) {
             e.preventDefault();
             var date = formatDateStringForURL($(this).find('#feeding-date').val());
-            var time = $(this).find('#feeding-time').val();
+            var time = formatTimeStringForPost($(this).find('#feeding-time').val());
             var amount = $(this).find('#feeding-amount').val();
             var notes = $(this).find('#feeding-notes').val();
             prepareFeedingData(postFeeding(date, time, amount, notes)).then(function () {
-                $('#feeding-table tbody').html(getFeedingRows(feedingData));
+                var dateArray = date.split('-');
+                dateArray.push(dateArray.shift());
+                $("#to-date").datepicker('setDate', dateArray.join('/'));
+                $("#from-date").datepicker('setDate', dateArray.join('/'));
+                $('#feeding-table .table').html(getFeedingTables(feedingData));
+                $('#forms-overlay').hide();
                 $('#forms form').hide();
                 $('#nav #feedings-link').click();
             });
@@ -238,10 +269,16 @@ function prepareDates(jQueryContainer) {
         $('#diaper-form').submit(function (e) {
             e.preventDefault();
             var date = formatDateStringForURL($(this).find('#diaper-date').val());
-            var time = $(this).find('#diaper-time').val();
+            var time = formatTimeStringForPost($(this).find('#diaper-time').val());
+            var poop = $(this).find('#diaper-poop').get(0).checked;
             var notes = $(this).find('#diaper-notes').val();
-            prepareFeedingData(postDiaper(date, time, notes)).then(function () {
-                $('#feeding-table tbody').html(getDiaperRows(diaperData));
+            prepareDiaperData(postDiaper(date, time, poop, notes)).then(function () {
+                var dateArray = date.split('-');
+                dateArray.push(dateArray.shift());
+                $("#to-date").datepicker('setDate', dateArray.join('/'));
+                $("#from-date").datepicker('setDate', dateArray.join('/'));
+                $('#diaper-table .table').html(getDiaperTables(diaperData));
+                $('#forms-overlay').hide();
                 $('#forms form').hide();
                 $('#nav #diapers-link').click();
             });
@@ -263,7 +300,31 @@ function prepareDates(jQueryContainer) {
             e.preventDefault();
             $('#forms form').hide();
             var formId = $('#nav a.active').data('form-id');
+            $('#forms-overlay').show();
             $('#' + formId).show();
+        });
+
+        $('#forms-overlay').click(function () {
+            $('#forms form').hide();
+            $(this).hide();
+        });
+
+        $('#dates-button').click(function (e) {
+            e.preventDefault();
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+                $('#dates').slideUp(400, function () {
+                    $('#dates-button .fa-times').hide();
+                    $('#dates-button .fa-calendar').show();
+                });
+            }
+            else {
+                $(this).addClass('active');
+                $('#dates').slideDown(400, function () {
+                    $('#dates-button .fa-calendar').hide();
+                    $('#dates-button .fa-times').show();
+                });
+            }
         });
     });
 })(jQuery);
