@@ -1,0 +1,89 @@
+#forms form {
+    display: none;
+}
+
+.date-table th, .date-table td {
+    padding: 5px 10px;
+    text-align: left;
+}
+
+.date-table thead tr {
+    background-color: #dddddd;
+}
+
+.date-table tbody tr:nth-child(2n) {
+    background-color: #dddddd;
+}
+
+.date-table tbody tr:nth-child(2n+1) {
+    background-color: #f9f9f9;
+}
+
+.date-table {
+    padding: 10px 0;
+}
+
+#feeding-table > h2 {
+    margin-bottom: 0;
+}
+
+header {
+    background-color: #eeeeee;
+    padding: 5px 10px;
+}
+
+body {
+    margin: 0;
+}
+
+#dates {
+    float: right;
+}
+
+#nav {
+    display: inline-block;
+}
+
+.date {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#nav a, footer a {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: inherit;
+    display: inline-block;
+    margin-right: 10px;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+#main {
+    padding: 0 10px;
+}
+
+#nav a.active {
+    background-color: #cccccc;
+}
+
+footer {
+    clear: both;
+    padding: 5px 10px;
+}
+
+#forms form {
+    max-width: 350px;
+    padding: 5px 10px;
+}
+
+.form-row input, .form-row textarea {
+    display: inline-block;
+    float: right;
+}
+
+.form-row {
+    clear: both;
+    padding: 5px 0;
+}

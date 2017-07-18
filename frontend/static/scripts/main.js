@@ -1,5 +1,12 @@
-var feedingTableRow = '<tr><td>{{date}}</td><td>{{time}}</td><td>{{amount}}</td><td>{{notes}}</td></tr>';
-var diaperTableRow = '<tr><td>{{date}}</td><td>{{time}}</td><td>{{notes}}</td></tr>';
+var feedingTemplate = {
+    'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Amount</th><th>Notes</th></thead><tbody>{{{rows}}}</tbody></table></div>',
+    'rows': '<tr><td>{{time}}</td><td>{{amount}}</td><td>{{notes}}</td></tr>'
+};
+
+var diaperTemplate = {
+    'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Notes</th></thead><tbody>{{{rows}}}</tbody></table></div>',
+    'rows': '<tr><td>{{time}}</td><td>{{notes}}</td></tr>'
+};
 
 var dayMap = [
     'Sunday',
@@ -32,7 +39,7 @@ function leftPad(num, width) {
         numString = '0' + numString;
     }
     return numString;
-}
+};
 
 function formatDateFromObject(dateObject) {
     var dateArray = [];
@@ -105,27 +112,48 @@ function getDiapers(fromDate, toDate) {
     });
 };
 
-function getRows(data, templateString) {
-    var rowsHTML = '';
-    var template = Handlebars.compile(templateString);
-    for (var i = 0; i < data.length; i++) {
-        var dateObject = buildDateFromString(data[i].date);
+function getTables(data, template) {
+    var tablesHTML = ''
+    var tableTemplate = Handlebars.compile(template['table']);
+    var rowTemplate = Handlebars.compile(template['rows']);
+    var dates = Object.keys(data).sort().reverse();
+    for (var i = 0; i < dates.length; i++) {
+        var date = dates[i]
+        var rowsHTML = '';
+        for (var j = 0; j < data[date].length; j++) {
+            var time = data[date][j].time;
+            var timeArray = time.split(':');
+            timeArray.pop();
+            if (timeArray[0] > 12) {
+                timeArray[0] = timeArray[0] - 12;
+                timeArray[1] += ' PM';
+            }
+            else if (timeArray[0] == 0) {
+                timeArray[0] = 12;
+                timeArray[1] += ' AM';
+            }
+            else {
+                timeArray[1] += ' AM';
+            }
+            data[date][j].time = timeArray.join(':');
+            rowsHTML += rowTemplate(data[date][j]);
+        }
+        var dateObject = buildDateFromString(date);
         dateString = ''
         dateString += dayMap[dateObject.getDay()] + ', ';
         dateString += monthMap[dateObject.getMonth()] + ' ';
         dateString += dateObject.getDate();
-        data[i].date = dateString;
-        rowsHTML += template(data[i]);
+        tablesHTML += tableTemplate({date: dateString, rows: rowsHTML});
     }
-    return rowsHTML;
+    return tablesHTML;
 };
 
-function getFeedingRows(feedingData) {
-    return getRows(feedingData, feedingTableRow);
+function getFeedingTables(feedingData) {
+    return getTables(feedingData, feedingTemplate);
 };
 
-function getDiaperRows(diaperData) {
-    return getRows(diaperData, diaperTableRow);
+function getDiaperTables(diaperData) {
+    return getTables(diaperData, diaperTemplate);
 };
 
 function prepareForm(jQueryForm) {
@@ -167,6 +195,16 @@ function prepareDates(jQueryContainer) {
         });
     };
 
+    function prepareTableData() {
+        prepareFeedingData(getFeedings(formatDateStringForURL($('#from-date').val()), formatDateStringForURL($('#to-date').val()))).then(function () {
+            $('#feeding-table .table').html(getFeedingTables(feedingData));
+        });
+
+        prepareDiaperData(getDiapers(formatDateStringForURL($('#from-date').val()), formatDateStringForURL($('#to-date').val()))).then(function () {
+            $('#diaper-table .table').html(getDiaperTables(diaperData));
+        });
+    };
+
     function displayActiveTable() {
         $('#main > div').hide();
         var tableId = $('#nav a.active').data('table-id');
@@ -175,6 +213,10 @@ function prepareDates(jQueryContainer) {
 
     $(document).ready(function () {
         prepareDates($('#dates'));
+
+        $('#dates input').change(function (e) {
+            prepareTableData();
+        });
 
         $('#forms form').each(function () {
             prepareForm($(this));
@@ -205,18 +247,13 @@ function prepareDates(jQueryContainer) {
             });
         });
         
-        prepareFeedingData(getFeedings(formatDateStringForURL($('#from-date').val()), formatDateStringForURL($('#to-date').val()))).then(function () {
-            $('#feeding-table tbody').html(getFeedingRows(feedingData));
-        });
-
-        prepareDiaperData(getDiapers(formatDateStringForURL($('#from-date').val()), formatDateStringForURL($('#to-date').val()))).then(function () {
-            $('#diaper-table tbody').html(getDiaperRows(diaperData));
-        });
+        prepareTableData();
 
         displayActiveTable();
 
         $('#nav a').click(function (e) {
             e.preventDefault();
+            $('#forms form').hide();
             $('#nav a').removeClass('active');
             $(this).addClass('active');
             displayActiveTable();

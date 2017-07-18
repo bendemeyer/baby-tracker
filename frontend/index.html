@@ -9,6 +9,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
         <script src="static/scripts/main.js"></script>
+        <link rel="stylesheet" href="/static/styles/main.css">
     </head>
     <body>
         <header>
@@ -30,34 +31,11 @@
         <div id="main">
             <div id="feeding-table">
                 <h2>Feedings</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <td>Date</td>
-                            <td>Time</td>
-                            <td>Amount</td>
-                            <td>Notes</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
+                <div class='table'></div>
             </div>
             <div id="diaper-table">
                 <h2>Diapers</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <td>Date</td>
-                            <td>Time</td>
-                            <td>Notes</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
+                <div class='table'></div>
             </div>
         </div>
         <div id="forms">
@@ -94,9 +72,9 @@
             </form>
         </div>
         <footer>
-            <div id="show-form">
+            <a id="show-form" href="#">
                 Add New Entry
-            </div>
+            </a>
         </footer>
     </body>
 </html>
