@@ -195,7 +195,7 @@ function getDiaperTables(diaperData) {
 function prepareForm(jQueryForm) {
     var thirtyMinutesAgo = new Date((new Date()).getTime() - (1000 * 60 * 30));
     jQueryForm.find('.form-date').datepicker('destroy').datepicker().datepicker('setDate', thirtyMinutesAgo);
-    jQueryForm.find('.form-time').clockpicker({twelvehour: true, donetext: "Done", default: 'now', fromnow: -(1000 * 60 * 30)});
+    jQueryForm.find('.form-time').clockpicker({twelvehour: true, donetext: "Done", default: 'now', fromnow: -(1000 * 60 * 30), align: 'right'});
     jQueryForm.find('.form-amount').val('');
     jQueryForm.find('.form-notes').val('');
 };
