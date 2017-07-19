@@ -62,7 +62,7 @@ table {
     width: 100%;
 }
 
-table thead th {
+table th {
     border-bottom: 2px solid #eceeef;
     background-color: #eceeef;
     color: #464a4c;

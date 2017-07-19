@@ -1,5 +1,5 @@
 var feedingTemplate = {
-    'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Amount</th><th>Notes</th></thead><tbody>{{{rows}}}</tbody></table></div>',
+    'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Amount</th><th>Notes</th></thead><tbody>{{{rows}}}<tr><th>Total:</th><th>{{total}}</th><th></th></tr></tbody></table></div>',
     'rows': '<tr><td>{{time}}</td><td>{{amount}}</td><td>{{notes}}</td></tr>'
 };
 
@@ -132,9 +132,14 @@ function getTables(data, template) {
     var rowTemplate = Handlebars.compile(template['rows']);
     var dates = Object.keys(data).sort().reverse();
     for (var i = 0; i < dates.length; i++) {
+        var totalAmount = 0;
         var date = dates[i]
         var rowsHTML = '';
         for (var j = 0; j < data[date].length; j++) {
+            if (data[date][j].amount) {
+                totalAmount += parseFloat(data[date][j].amount);
+                data[date][j].amount = data[date][j].amount + ' oz';
+            }
             var time = data[date][j].time;
             var timeArray = time.split(':');
             timeArray.pop();
@@ -157,7 +162,14 @@ function getTables(data, template) {
         dateString += dayMap[dateObject.getDay()] + ', ';
         dateString += monthMap[dateObject.getMonth()] + ' ';
         dateString += dateObject.getDate();
-        tablesHTML += tableTemplate({date: dateString, rows: rowsHTML});
+        var templateData = {
+            date: dateString,
+            rows: rowsHTML
+        }
+        if (totalAmount) {
+            templateData['total'] = totalAmount + ' oz';
+        }
+        tablesHTML += tableTemplate(templateData);
     }
     return tablesHTML;
 };
