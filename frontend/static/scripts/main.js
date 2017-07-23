@@ -143,15 +143,16 @@ function getTables(data, template) {
             var time = data[date][j].time;
             var timeArray = time.split(':');
             timeArray.pop();
-            if (timeArray[0] > 12) {
-                timeArray[0] = timeArray[0] - 12;
+            if (timeArray[0] >= 12) {
+                if (timeArray[0] > 12) {
+                    timeArray[0] = timeArray[0] - 12;
+                }
                 timeArray[1] += ' PM';
             }
-            else if (timeArray[0] == 0) {
-                timeArray[0] = 12;
-                timeArray[1] += ' AM';
-            }
             else {
+                if (timeArray[0] == 0) {
+                    timeArray[0] = 12;
+                }
                 timeArray[1] += ' AM';
             }
             data[date][j].time = timeArray.join(':');

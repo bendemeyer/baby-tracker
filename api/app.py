@@ -26,7 +26,7 @@ def feedings(from_date, to_date=None):
             'notes': params['notes']
         })
         dbconn.commit()
-    sql = "SELECT date, time, amount, notes from feedings where date >= %(from_date)s and date <= %(to_date)s order by date desc, time asc;"
+    sql = "SELECT date, time, amount, notes from feedings where date >= %(from_date)s and date <= %(to_date)s order by date desc, time desc;"
     cursor = dbconn.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(sql, {
         'from_date': from_date,
@@ -53,7 +53,7 @@ def diapers(from_date, to_date=None):
             'notes': params['notes']
         })
         dbconn.commit()
-    sql = "SELECT date, time, poop, notes from diapers where date >= %(from_date)s and date <= %(to_date)s order by date desc, time asc;"
+    sql = "SELECT date, time, poop, notes from diapers where date >= %(from_date)s and date <= %(to_date)s order by date desc, time desc;"
     cursor = dbconn.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(sql, {
         'from_date': from_date,
