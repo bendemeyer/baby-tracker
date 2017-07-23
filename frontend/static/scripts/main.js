@@ -147,13 +147,13 @@ function getTables(data, template) {
                 if (timeArray[0] > 12) {
                     timeArray[0] = timeArray[0] - 12;
                 }
-                timeArray[1] += ' PM';
+                timeArray[1] += '&nbsp;PM';
             }
             else {
                 if (timeArray[0] == 0) {
                     timeArray[0] = 12;
                 }
-                timeArray[1] += ' AM';
+                timeArray[1] += '&nbsp;AM';
             }
             data[date][j].time = timeArray.join(':');
             rowsHTML += rowTemplate(data[date][j]);
