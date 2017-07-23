@@ -1,11 +1,11 @@
 var feedingTemplate = {
     'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Amount</th><th>Notes</th></thead><tbody>{{{rows}}}<tr><th>Total:</th><th>{{total}}</th><th></th></tr></tbody></table></div>',
-    'rows': '<tr><td>{{time}}</td><td>{{amount}}</td><td>{{notes}}</td></tr>'
+    'rows': '<tr><td>{{{time}}}</td><td>{{amount}}</td><td>{{notes}}</td></tr>'
 };
 
 var diaperTemplate = {
     'table': '<div class="date-table"><h3>{{date}}</h3><table><thead><tr><th>Time</th><th>Poop?</th><th>Notes</th></thead><tbody>{{{rows}}}</tbody></table></div>',
-    'rows': '<tr><td>{{time}}</td><td>{{poop}}</td><td>{{notes}}</td></tr>'
+    'rows': '<tr><td>{{{time}}}</td><td>{{poop}}</td><td>{{notes}}</td></tr>'
 };
 
 var dayMap = [
