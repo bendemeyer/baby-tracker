@@ -84,7 +84,7 @@ function buildDateFromString(formattedDate) {
 
 function postFeeding(date, time, amount, notes) {
     return jQuery.ajax({
-        url: '/api/feedings/' + date + '/',
+        url: 'api/feedings/' + date + '/',
         contentType: "application/json",
         type: 'POST',
         dataType: 'json',
@@ -98,7 +98,7 @@ function postFeeding(date, time, amount, notes) {
 
 function postDiaper(date, time, poop, notes) {
     return jQuery.ajax({
-        url: '/api/diapers/' + date + '/',
+        url: 'api/diapers/' + date + '/',
         contentType: "application/json",
         type: 'POST',
         dataType: 'json',
@@ -112,7 +112,7 @@ function postDiaper(date, time, poop, notes) {
 
 function getFeedings(fromDate, toDate) {
     return jQuery.ajax({
-        url: '/api/feedings/' + fromDate + '/' + toDate + '/',
+        url: 'api/feedings/' + fromDate + '/' + toDate + '/',
         type: 'GET',
         dataType: 'json'
     });
@@ -120,7 +120,7 @@ function getFeedings(fromDate, toDate) {
 
 function getDiapers(fromDate, toDate) {
     return jQuery.ajax({
-        url: '/api/diapers/' + fromDate + '/' + toDate + '/',
+        url: 'api/diapers/' + fromDate + '/' + toDate + '/',
         type: 'GET',
         dataType: 'json'
     });
