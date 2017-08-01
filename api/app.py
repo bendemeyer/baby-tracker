@@ -10,8 +10,8 @@ import decimal
 
 app = Flask("Baby Tracker")
 
-@app.route("/api/feedings/<from_date>/", methods=["GET", "POST"])
-@app.route("/api/feedings/<from_date>/<to_date>/", methods=["GET", "POST"])
+@app.route("/feedings/<from_date>/", methods=["GET", "POST"])
+@app.route("/feedings/<from_date>/<to_date>/", methods=["GET", "POST"])
 def feedings(from_date, to_date=None):
     to_date = to_date or from_date
     dbconn = get_db_connection()
@@ -37,8 +37,8 @@ def feedings(from_date, to_date=None):
     return Response(json.dumps(group_and_sanitize_rows(rows)), mimetype='application/json')
 
 
-@app.route("/api/diapers/<from_date>/", methods=["GET", "POST"])
-@app.route("/api/diapers/<from_date>/<to_date>/", methods=["GET", "POST"])
+@app.route("/diapers/<from_date>/", methods=["GET", "POST"])
+@app.route("/diapers/<from_date>/<to_date>/", methods=["GET", "POST"])
 def diapers(from_date, to_date=None):
     to_date = to_date or from_date
     dbconn = get_db_connection()
