@@ -214,7 +214,7 @@ footer {
 }
 
 .button.active {
-    box-shadow: inset 0 0 12px 3px #444488;
+    box-shadow: inset 0 0 24px 6px #444488;
 }
 
 .button:active {
